@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Automapper editor</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="css/iconfont/material-icons.css">
+</head>
+<body>
+	
+	<div class="container">
+			
+		<div class="collection menu-file-list" id="file-list">
+			<div class="progress">
+				<div class="indeterminate"></div>
+			</div>
+		</div>
+		
+	</div>
+
+
+	<nav class="nav-main">
+		<div class="nav-wrapper">
+			<a href="#" class="brand-logo left">Rule editor</a>
+			<ul id="nav-mobile" class="right">
+				<li><a>Add new</a></li>
+				<li><a href="javascript:showhideRemoveBtn()" id="removebtn">Remove</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<script>
+		// lang: js
+		const appDir = require("electron").remote.app.getPath("userData");
+		const fs = require("fs");
+		const path = require("path");
+		const rimraf = require("rimraf");
+
+		//============= remove button ===========
+		function showhideRemoveBtn(){
+			console.log("lol");
+			let elems = document.querySelectorAll(".menu-file .secondary-content");
+
+			let removeHidden = elems[0].classList.contains("hidden")?true:false;
+
+			document.querySelector("#removebtn").innerHTML = removeHidden?"Stop removing":"Remove";
+
+			elems.forEach(elem => {
+				if(removeHidden)
+					elem.classList.remove("hidden");
+				else 
+					elem.classList.add("hidden");
+			});
+		}
+
+		//=========== load files ============
+
+		function processFileList(files){
+			if(!files){
+				document.getElementById("file-list").innerText = "No files found";
+				return;
+			}
+			document.getElementById("file-list").innerText = "";
+			files.forEach( (item, i)=>{
+				addListElem(item.name, item.img, item.path)
+			})
+		}
+/*
+		<div class="collection-item avatar menu-file valign-wrapper">
+				<img src="img/exp.jpg">
+				<span>Example name</span>
+				<i class="material-icons secondary-content file-remove hidden">delete</i>
+			</div>
+*/
+		function addListElem(name, img, dir){
+			let root = document.createElement("div");
+			let imgNode = document.createElement("img");
+			let titleNode = document.createElement("span");
+			let removeNode = document.createElement("i");
+			root.className = "collection-item avatar menu-file valign-wrapper";
+			removeNode.className = "material-icons secondary-content file-remove hidden";
+			removeNode.innerHTML = "delete";
+			titleNode.innerHTML = name;
+			imgNode.setAttribute("src", "file://"+img);
+			root.append(imgNode)
+			root.append(titleNode)
+			root.append(removeNode);
+
+			removeNode.onclick = ()=>{
+				console.log(dir);
+				rimraf.sync(dir);
+				loadFileList();
+			}
+
+			document.getElementById("file-list").append(root);
+		}
+
+		document.addEventListener("DOMContentLoaded", ()=>{
+			loadFileList();
+		});
+
+
+		function loadFileList(){
+			let projectsDir = path.join(appDir, "projects");
+			if(!fs.existsSync(projectsDir))
+				fs.mkdirSync(projectsDir);
+
+			fs.readdir(projectsDir,{},(err,files)=>{
+				if(err || files.length==0){
+					processFileList(false);
+					console.log(err);
+					return;
+				}
+				files = files.filter( file=> fs.lstatSync(path.join(projectsDir, file)).isDirectory() );
+				let projects = files.map((file)=>{
+					let name = path.basename(file);
+					let img = path.join(projectsDir, file, "img.png");
+					return {
+						name: name,
+						img: img,
+						path:  path.join(projectsDir, file)
+					};
+				});
+
+				processFileList(projects);
+			});
+		}
+		// endlang
+	</script>
+</body>
+</html>

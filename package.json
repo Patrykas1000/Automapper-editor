@@ -1,0 +1,17 @@
+{
+  "name": "automapper-editor",
+  "description": "Editor for automapper rules files to Teeworlds",
+  "version": "0.0.1",
+  "main": "main.js",
+  "author": "Patryk Paluch",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^4.0.5"
+  },
+  "dependencies": {
+	  "rimraf": "^2.6.3"
+  },
+  "scripts": {
+	"start": "electron ."
+  }
+}

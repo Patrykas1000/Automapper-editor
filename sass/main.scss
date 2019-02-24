@@ -1,0 +1,66 @@
+@import "materialize.scss";
+@import "font/ubuntu.css";
+
+$bg: #3e3e3e;
+$fg: #e3e3e3;
+
+$bgLight: #686868;
+$bgDark: #181818;
+$fgLight: #ffffff;
+$fgDark: #b1b1b1;
+
+@keyframes shake {
+	0%, 100% {
+		transform: translate(-2px, 0) rotate(-10deg);
+	}
+	50%{
+		transform: translate(2px, 0) rotate(10deg);
+	}
+}
+
+body{
+	@extend .blue, .lighten-4;
+	font-family: 'Ubuntu', sans-serif;
+	padding-top: 70px;
+}
+.menu-file-list {
+
+	.menu-file {
+		border-color: $fgDark;
+		cursor: pointer;
+		//background-color: $bgDark !important;
+
+		img {
+			width: 42px;
+			height: 42px;
+			overflow: hidden;
+			position: absolute;
+			left: 15px;
+			display: inline-block;
+			vertical-align: middle;
+		}
+		span {
+			vertical-align: middle;
+			font-size: 1.8em;
+		}
+		&:hover {
+			@extend .grey, .lighten-2;
+		}
+	}
+	.file-remove {
+	color: red;
+
+		&:hover {
+			animation: shake;
+			animation-duration: 0.2s;
+			animation-iteration-count: infinite;
+		}
+	}
+}
+.nav-main{
+	position: fixed;
+	top: 0;
+}
+.hidden {
+	display: none !important;
+}

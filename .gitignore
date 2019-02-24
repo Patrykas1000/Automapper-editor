@@ -1,0 +1,9 @@
+#node
+node_modules/
+
+#code
+.vscode/
+
+#compile .scss using sass
+css/main.css
+css/main.css.map
